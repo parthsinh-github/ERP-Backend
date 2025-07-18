@@ -1,0 +1,14 @@
+runtime: nodejs18
+
+env_variables:
+  MONGO_URI: "mongodb+srv://Parthsinh:parth12345@cluster0.dk3e4ce.mongodb.net/"
+  JWT_SECRET: "mykeyman"
+  NODE_ENV: "production"
+  ADMIN_SECRET_KEY: "admin"
+  FACULTY_SECRET_KEY: "faculty"
+  EMAIL_USER: "23bca248@vtcbcsr.edu.in"
+  EMAIL_PASS: "nbhn tsxt lsyy oeto"
+
+handlers:
+  - url: /.*
+    script: auto

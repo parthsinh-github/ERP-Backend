@@ -5,7 +5,7 @@ const OtpSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true },
     otp: { type: String, required: true },
     expires: { type: Date, required: true },
-      attempts: { type: Number, default: 0 }  // ✅ Add this
+    attempts: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

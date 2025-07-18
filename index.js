@@ -28,7 +28,7 @@ app.use(compression());
 
 // ✅ CORS Setup (Netlify only)
 app.use(cors({
-  origin: ['https://college-erp-tech.netlify.app'],
+  origin: ['https://college-erp-tech.netlify.app','http://localhost:5173'],
   credentials: true,
 }));
 

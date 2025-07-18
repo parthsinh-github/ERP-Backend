@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { User } from "../models/user.js";
-import Otp from "../models/otp.js"; // your existing model (required)
+import Otp from "../models/Otp.js"; // your existing model (required)
 import crypto from "crypto";
 import { sendEmail } from "../utils/sendEmail.js"; // 
 

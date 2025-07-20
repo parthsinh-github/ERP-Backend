@@ -26,23 +26,30 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(compression());
 
-// ✅ CORS Setup (Netlify only)
+/// ✅ CORS Middleware
 app.use(cors({
-  origin: ['https://college-erp-tech.netlify.app'],
+  origin: ['http://localhost:5173', 'https://college-erp-tech.netlify.app'],
   credentials: true,
 }));
 
-// ✅ Preflight Handling (OPTIONS)
+// ✅ Preflight Handling (for older browsers)
 app.options('*', cors());
 
-// ✅ Optional fallback CORS headers (helps with stubborn hosting issues)
+// ✅ Dynamic CORS Header Fallback (important!)
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://college-erp-tech.netlify.app");
+  const allowedOrigins = ['http://localhost:5173', 'https://college-erp-tech.netlify.app'];
+  const origin = req.headers.origin;
+
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin); // ✅ Important line
+  }
+
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
   next();
 });
+
 
 // Routes
 app.use("/api/v1/users", userRoutes);

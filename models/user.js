@@ -12,7 +12,25 @@ const userSchema = new mongoose.Schema({
   enrollmentNumber: { type: String, unique: true, sparse: true },
   dateOfBirth: { type: Date },
   gender: { type: String, enum: ["Male", "Female", "Other"] },
-  department: { type: String },
+  department: {
+  type: String,
+  enum: [
+    "Computer Science",
+    "Information Technology",
+    "Electronics",
+    "Mechanical",
+    "Civil",
+    "Electrical",
+    "Business Administration",
+    "Commerce",
+    "Arts",
+    "Science",
+    "Other"
+  ],
+  required: function () {
+    return this.role === "student" || this.role === "faculty";
+  }
+},
   courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
   address: { type: String },
   city: { type: String },

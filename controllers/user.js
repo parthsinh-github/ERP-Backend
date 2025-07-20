@@ -73,10 +73,11 @@ export const registerUser = async (req, res) => {
 
     if (otpRecord.attempts >= 3) {
       return res.status(429).json({ success: false, message: "Too many incorrect attempts. Please request a new OTP." });
-    }
+    } 
+
 
     if (otpRecord.otp !== otp) {
-      otpRecord.attempts += 1;
+        otpRecord.attempts += 1;
       await otpRecord.save();
       return res.status(400).json({ success: false, message: "Invalid OTP" });
     }
@@ -105,6 +106,7 @@ export const registerUser = async (req, res) => {
 
     await user.save();
 
+
     await Otp.deleteOne({ email });
 
     const token = generateToken(user);
@@ -115,6 +117,7 @@ export const registerUser = async (req, res) => {
       token,
       user: sanitizeUser(user),
     });
+    
   } catch (error) {
     console.error("Registration error:", error);
     res.status(500).json({ success: false, message: "Server error" });
@@ -146,9 +149,10 @@ export const loginUser = async (req, res) => {
       user: sanitizeUser(user),
     });
   } catch (error) {
-    console.error("Login error:", error);
-    res.status(500).json({ success: false, message: "Server error" });
-  }
+  console.error("❌ Registration error:", error.message);
+  console.error("❌ Full error:", error);
+  res.status(500).json({ success: false, message: error.message || "Server error" });
+}
 };
 
 // ===================== LOGOUT ===================== //

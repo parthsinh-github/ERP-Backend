@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import compression from 'compression';
-import path from 'path';
 
 // Routes
 import userRoutes from "./routes/user.js";
@@ -59,15 +58,6 @@ app.use("/api/v1/report", reportRoutes);
 app.use("/api/v1/id-card", idCardRoutes);
 app.use("/api/v1/document", documentRoutes);
 
-
-if (process.env.NODE_ENV === 'production') {
-  const frontendPath = path.join(__dirname, '../frontend/build');
-  app.use(express.static(frontendPath));
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(frontendPath, 'index.html'));
-  });
-}
 
 // Start server
 const PORT = process.env.PORT || 3000;

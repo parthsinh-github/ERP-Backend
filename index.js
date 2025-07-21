@@ -5,7 +5,6 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import compression from 'compression';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
 // Routes
 import userRoutes from "./routes/user.js";
@@ -60,9 +59,6 @@ app.use("/api/v1/report", reportRoutes);
 app.use("/api/v1/id-card", idCardRoutes);
 app.use("/api/v1/document", documentRoutes);
 
-// Serve frontend (optional)
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 if (process.env.NODE_ENV === 'production') {
   const frontendPath = path.join(__dirname, '../frontend/build');

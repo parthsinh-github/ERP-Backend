@@ -18,7 +18,7 @@ const router = express.Router();
 
 // Submit leave request - Only student will use this route
 // POST /api/leaves/:id
-router.post('/submit/:id', submitLeaveRequest);
+router.post('/:id', submitLeaveRequest);
 
 // Get leave requests - returns all if role is admin/faculty, otherwise returns own
 // GET /api/leaves/:id

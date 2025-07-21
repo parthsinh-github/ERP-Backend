@@ -46,7 +46,8 @@ export const createAnnouncement = async (req, res) => {
 export const getAllAnnouncements = async (req, res) => {
     try {
       const announcements = await Announcement.find()
-  .populate('createdBy', 'name');   
+  .populate('createdBy', 'fullName')
+    .sort({ date: -1 });  
         res.status(200).json(announcements);
     } catch (error) {
         res.status(500).json({ message: "Error retrieving announcements", error: error.message });

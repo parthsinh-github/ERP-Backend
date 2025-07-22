@@ -33,31 +33,40 @@ export const createRequest = async (req, res) => {
 
 
 export const getAllRequestsForAdmin = async (req, res) => {
-  const { adminId } = req.params;
+  const { id } = req.params;
 
   try {
-    // 🔐 1. Check if the given ID belongs to an admin
-    const adminUser = await User.findById(adminId);
+    const user = await User.findById(id); // Get user role based on ID
 
-    if (!adminUser || adminUser.role !== 'admin') {
-      return res.status(403).json({
-        success: false,
-        error: 'Access denied. Only admins can view all requests.',
-      });
+  
+    
+
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'User not found' });
     }
 
-    // ✅ 2. If admin, fetch all document requests
-    const requests = await DocumentRequest.find()
-      .populate('student', 'fullName email') // customize as needed
-      .sort({ requestedAt: -1 });
+    let requests;
+
+    if (user.role === 'admin') {
+      // ✅ Admin: Get all document requests
+      requests = await DocumentRequest.find()
+        .populate('student', 'fullName email')
+        .sort({ requestedAt: -1 }); // latest first
+    } else {
+      // 👤 Non-admin: Get only requests for that specific user
+      requests = await DocumentRequest.find({ student: id })
+        .populate('student', 'fullName email')
+        .sort({ requestedAt: -1 }); // latest first
+    }
 
     res.status(200).json({ success: true, data: requests });
 
   } catch (err) {
-    console.error('Error fetching requests for admin:', err);
+    console.error('Error fetching document requests:', err);
     res.status(500).json({ success: false, error: 'Error fetching requests' });
   }
 };
+
 
 export const updateRequestStatus = async (req, res) => {
   const { adminId, documentRequestId } = req.params;

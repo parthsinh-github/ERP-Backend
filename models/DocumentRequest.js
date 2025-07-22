@@ -48,10 +48,6 @@ const documentRequestSchema = new mongoose.Schema({
 
   deliveryEmail: {
     type: String,
-    required: function () {
-      return this.deliveryMode === 'email' || this.deliveryMode === 'both';
-    },
-    match: [/.+@.+\..+/, 'Please enter a valid email address'],
   },
 
   expectedNeedDate: {

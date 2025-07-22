@@ -13,7 +13,7 @@ router.post('/:studentId', createRequest);
 
 // Admin gets all requests
 // GET /api/v1/requests/admin/:adminId
-router.get('/:adminId', getAllRequestsForAdmin);
+router.get('/:id', getAllRequestsForAdmin);
 
 // routes/documentRequestRoutes.js
 router.put('/:adminId/:documentRequestId', updateRequestStatus);

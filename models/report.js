@@ -2,15 +2,15 @@ import mongoose from "mongoose";
 
 const reportSchema = new mongoose.Schema(
   {
-    studentId: {
+    createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    adminId: {
+    studentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      // required: true,
     },
     type: {
       type: String,

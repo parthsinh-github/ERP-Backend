@@ -23,21 +23,37 @@ const examSchema = new mongoose.Schema({
     required: true,
   },
   department: {
-    type: String,
-    required: true,
-  },
+  type: String,
+  enum: [
+    "Computer Science",
+    "Information Technology",
+    "Electronics",
+    "Mechanical",
+    "Civil",
+    "Electrical",
+    "Business Administration",
+    "Commerce",
+    "Arts",
+    "Science",
+    "Other"
+  ],
+  required: function () {
+    return this.role === "student" || this.role === "faculty";
+  }
+},
   semester: {
-    type: Number,
-    required: true,
-  },
+  type: Number,
+  enum: [1, 2, 3, 4, 5, 6],
+  required: true,
+},
   subject: {
     type: String,
     required: true,
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Admin',
-    required: true,
+    ref: 'User',
+  
   },
   createdAt: {
     type: Date,

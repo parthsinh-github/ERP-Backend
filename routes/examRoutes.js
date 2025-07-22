@@ -4,7 +4,7 @@ import { createExam, getAllExams, getExamById, deleteExam } from '../controllers
 const router = express.Router();
 
 // POST /api/v1/exams - Create exam
-router.post('/create', createExam);
+router.post('/:id', createExam);
 
 // GET /api/v1/exams - Get all exams
 router.get('/allExam', getAllExams);

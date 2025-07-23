@@ -2,17 +2,18 @@
 import mongoose from 'mongoose';
 
 const leaveRequestSchema = new mongoose.Schema({
-  studentName: {
-    type: String,
-    required: true,
+  student: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User', // Connects to all user info
+    // required: true,
   },
   studentId: {
     type: String,
-    required: true,
+    // required: true,
   },
   department: {
     type: String,
-    required: true,
+    // required: true,
   },
   fromDate: {
     type: Date,

@@ -54,6 +54,15 @@ const documentRequestSchema = new mongoose.Schema({
     type: Date,
     required: false, // Optional field in case student has a deadline
   },
+   createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User', // or 'Student'/'Faculty'/'Admin' as per your auth system
+      required: true,
+     },
+     updatedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
 
   requestedAt: {
     type: Date,

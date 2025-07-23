@@ -36,28 +36,21 @@ export const getAllRequestsForAdmin = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const user = await User.findById(id); // Get user role based on ID
-
-  
-    
-
+    // Check if user exists
+    const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ success: false, error: 'User not found' });
     }
 
-    let requests;
+    // Base query
+    let query = user.role === 'admin' || user.role === 'faculty'
+      ? {} // Admins/faculty get all requests
+      : { student: id }; // Others get only their own
 
-    if (user.role === 'admin') {
-      // ✅ Admin: Get all document requests
-      requests = await DocumentRequest.find()
-        .populate('student', 'fullName email')
-        .sort({ requestedAt: -1 }); // latest first
-    } else {
-      // 👤 Non-admin: Get only requests for that specific user
-      requests = await DocumentRequest.find({ student: id })
-        .populate('student', 'fullName email')
-        .sort({ requestedAt: -1 }); // latest first
-    }
+    // Fetch document requests with full student info, excluding password
+    const requests = await DocumentRequest.find(query)
+      .populate('student', '-password -__v')
+      .sort({ requestedAt: -1 });
 
     res.status(200).json({ success: true, data: requests });
 
@@ -66,6 +59,7 @@ export const getAllRequestsForAdmin = async (req, res) => {
     res.status(500).json({ success: false, error: 'Error fetching requests' });
   }
 };
+
 
 
 export const updateRequestStatus = async (req, res) => {

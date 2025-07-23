@@ -14,7 +14,8 @@ router.post('/:id', createAnnouncement);
 
 
 // Get all announcements
-router.get('/allAnnouncements', getAllAnnouncements);
+router.get('/:studentId', getAllAnnouncements);
+
 
 // Get a single announcement by ID
 router.get('/:id', getAnnouncementById);

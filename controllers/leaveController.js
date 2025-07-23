@@ -1,46 +1,42 @@
-// controllers/leaveController.js
 import LeaveRequest from '../models/leaveRequest.js';
-// import User from '../models/user.js'; // assuming roles are stored here
-import {User} from '../models/user.js'; // assuming roles are stored here
+import { User } from '../models/user.js';
 
 // POST: /api/leaves/:id
 export const submitLeaveRequest = async (req, res) => {
-  const { id } = req.params;
-
-  const {
-    studentName,
-    studentId,
-    department,
-    fromDate,
-    toDate,
-    reason,
-  } = req.body;
+  const { id } = req.params; // Logged-in user ID
+  const { fromDate, toDate, reason } = req.body;
 
   try {
+    // Check if user exists
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'User not found' });
+    }
+
+    // Create leave request and associate with user
     const newLeave = new LeaveRequest({
-      studentName,
-      studentId,
-      department,
       fromDate,
       toDate,
       reason,
-      createdBy: id,
+      createdBy: user._id,
     });
 
     const saved = await newLeave.save();
     res.status(201).json({ success: true, data: saved });
   } catch (err) {
+    console.error('Error submitting leave request:', err);
     res.status(400).json({ success: false, error: err.message });
   }
 };
 
+
+// GET: /api/leaves/:id
 // GET: /api/leaves/:id
 export const getAllLeaveRequests = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const user = await User.findById(id); // Get user role based on ID
-
+    const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ success: false, error: 'User not found' });
     }
@@ -48,18 +44,18 @@ export const getAllLeaveRequests = async (req, res) => {
     let leaves;
 
     if (user.role === 'admin' || user.role === 'faculty') {
-      // Admins or Faculty get all leave requests
-      leaves = await LeaveRequest.find().sort({ createdAt: -1 });
+      leaves = await LeaveRequest.find().populate('createdBy').sort({ createdAt: -1 });
     } else {
-      // Students get only their own
-      leaves = await LeaveRequest.find({ createdBy: id }).sort({ createdAt: -1 });
+      leaves = await LeaveRequest.find({ createdBy: id }).populate('createdBy').sort({ createdAt: -1 });
     }
 
-    res.json({ success: true, data: leaves });
+    res.status(200).json({ success: true, data: leaves });
   } catch (err) {
+    console.error('Error fetching leave requests:', err);
     res.status(500).json({ success: false, error: err.message });
   }
 };
+
 // PATCH: /api/leaves/:id
 // PATCH /api/leaves/:leaveId/:userId
 export const updateLeaveStatus = async (req, res) => {

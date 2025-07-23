@@ -27,9 +27,9 @@ const userSchema = new mongoose.Schema({
     "Science",
     "Other"
   ],
-  required: function () {
-    return this.role === "student" || this.role === "faculty";
-  }
+  // required: function () {
+  //   return this.role === "student" || this.role === "faculty";
+  // }
 },
   courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
   address: { type: String },

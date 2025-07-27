@@ -48,76 +48,65 @@ export const createAnnouncement = async (req, res) => {
 
 // 🔄 GET: All Announcements filtered by Student's batch, year, stream
 // 🔄 GET: All Announcements filtered by Student's batch, year, stream
-
-
 export const getAllAnnouncements = async (req, res) => {
   try {
-     const student = await User.findById(req.params.studentId);
-
+    const student = await User.findById(req.params.studentId);
     if (!student) {
-      return res.status(404).json({ message: 'Student not found' });
+      return res.status(404).json({ message: "Student not found" });
     }
 
-    const { batchYear, division, department } = student;
+    const { batchYear, stream, division, role } = student;
+
+    // ✅ If admin/faculty → return all
+    if (role === "admin" || role === "faculty") {
+      const allAnnouncements = await Announcement.find().sort({ date: -1 });
+      return res.status(200).json(allAnnouncements);
+    }
+
+    // ✅ Filter announcements based on student & announcement fields
     const announcements = await Announcement.find({
       $or: [
-        // Global announcements (no filters set)
+        // 1️⃣ Global announcements → visible to everyone
         {
-          batchYear: { $exists: false },
-          division: { $exists: false },
-          department: { $exists: false }
+          $and: [
+            { $or: [{ stream: { $exists: false } }, { stream: "" }, { stream: null }] },
+            { $or: [{ batchYear: { $exists: false } }, { batchYear: null }] },
+            { $or: [{ division: { $exists: false } }, { division: "" }, { division: null }] }
+          ]
         },
-        // Batch year match only
+
+        // 2️⃣ Announcements with only stream → match student's stream
         {
-          batchYear,
-          division: { $exists: false },
-          department: { $exists: false }
+          stream: stream,
+          $and: [
+            { $or: [{ batchYear: { $exists: false } }, { batchYear: null }] },
+            { $or: [{ division: { $exists: false } }, { division: "" }, { division: null }] }
+          ]
         },
-        // Division match only
+
+        // 3️⃣ Announcements with stream + batchYear → match both
         {
-          division,
-          batchYear: { $exists: false },
-          department: { $exists: false }
+          stream: stream,
+          batchYear: batchYear,
+          $or: [{ division: { $exists: false } }, { division: "" }, { division: null }]
         },
-        // Department match only (optional if you add department later)
+
+        // 4️⃣ Announcements with stream + batchYear + division → match all three
         {
-          department,
-          batchYear: { $exists: false },
-          division: { $exists: false }
-        },
-        // Batch + Division
-        {
-          batchYear,
-          division
-        },
-        // Batch + Department
-        {
-          batchYear,
-          department
-        },
-        // Division + Department
-        {
-          division,
-          department
-        },
-        // Batch + Division + Department
-        {
-          batchYear,
-          division,
-          department
+          stream: stream,
+          batchYear: batchYear,
+          division: division
         }
       ]
     }).sort({ date: -1 });
 
-    res.status(200).json(announcements);
+    return res.status(200).json(announcements);
+
   } catch (err) {
-    console.error('Error fetching announcements:', err);
-    res.status(500).json({ error: 'Server error' });
+    console.error("❌ Error fetching announcements:", err);
+    return res.status(500).json({ error: "Server error" });
   }
 };
-
-
-
 
 
 

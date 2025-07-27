@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const idCardSchema = new mongoose.Schema({
   student: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Student",
+    ref: "User",
     required: true,
     unique: true,
   },
@@ -13,6 +13,10 @@ const idCardSchema = new mongoose.Schema({
   },
   downloadTimestamp: {
     type: Date,
+  },
+    downloadCount: {
+    type: Number,
+    default: 0,
   },
   reDownloadRequest: {
     requested: { type: Boolean, default: false },

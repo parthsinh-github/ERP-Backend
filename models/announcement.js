@@ -13,9 +13,10 @@ const announcementSchema = new mongoose.Schema({
     type: Number,
     enum: [2023, 2024, 2025, 2026, 2027],
    },     // e.g., 2023
-  currentYear: { type: Number,
-     type: Number,
-  
+  stream: { 
+     type: String,
+    enum: ['BBA', 'BCA', 'BTECH', 'BCOM', 'MCA', 'MBA', 'OTHER'],
+
     },   
   division: { type: String, 
  enum: ['Div-1', 'Div-2', 'Div-3', 'Div-4', 'Div-5'],

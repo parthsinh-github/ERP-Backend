@@ -57,7 +57,7 @@ const documentRequestSchema = new mongoose.Schema({
    createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User', // or 'Student'/'Faculty'/'Admin' as per your auth system
-      required: true,
+      // required: true,
      },
      updatedBy: {
     type: mongoose.Schema.Types.ObjectId,

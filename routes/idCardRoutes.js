@@ -9,7 +9,7 @@ import {
 const router = express.Router();
 
 // Body: { studentId }
-router.post("/download", downloadIDCard);
+router.post("/:studentId", downloadIDCard);
 
 // Body: { studentId, reason }
 router.post("/request-redownload", requestReDownload);
@@ -17,6 +17,7 @@ router.post("/request-redownload", requestReDownload);
 // Body: { studentId, status, adminId }
 router.post("/review-request", reviewReDownload);
 
-router.get("/all", getAllIdCards);
+
+router.get("/all/:id", getAllIdCards);
 
 export default router;

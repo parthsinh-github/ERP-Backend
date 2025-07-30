@@ -13,6 +13,10 @@ import examRoutes from './routes/examRoutes.js';
 import reportRoutes from './routes/report.js';
 import idCardRoutes from './routes/idCardRoutes.js';
 import documentRoutes from './routes/documentRequestRoutes.js';
+import documentRoute   from './routes/documentRoutes.js';
+import bankDetailsRoutes from './routes/bankDetailsRoutes.js';
+import academicDetailsRoutes from './routes/academicDetailsRoutes.js';
+
 
 // Config
 dotenv.config();
@@ -57,6 +61,9 @@ app.use("/api/v1/exam", examRoutes);
 app.use("/api/v1/report", reportRoutes);
 app.use("/api/v1/id-card", idCardRoutes);
 app.use("/api/v1/document", documentRoutes);
+app.use("/api/v1/upload/document", documentRoute);
+app.use('/api/v1/bank', bankDetailsRoutes);
+app.use('/api/v1/academic', academicDetailsRoutes);
 
 
 // Start server

@@ -46,67 +46,72 @@ export const createAnnouncement = async (req, res) => {
 };
 
 
-// 🔄 GET: All Announcements filtered by Student's batch, year, stream
-// 🔄 GET: All Announcements filtered by Student's batch, year, stream
-export const getAllAnnouncements = async (req, res) => {
-  try {
-    const student = await User.findById(req.params.studentId);
-    if (!student) {
-      return res.status(404).json({ message: "Student not found" });
+  // 🔄 GET: All Announcements filtered by Student's batch, year, stream
+  // 🔄 GET: All Announcements filtered by Student's batch, year, stream
+  export const getAllAnnouncements = async (req, res) => {
+    try {
+      const student = await User.findById(req.params.studentId);
+      if (!student) {
+        return res.status(404).json({ message: "Student not found" });
+      }
+
+      const { batchYear, stream, division, role } = student;
+
+      // ✅ If admin/faculty → return all
+      if (role === "admin" || role === "faculty") {
+        const allAnnouncements = await Announcement.find()
+         .populate("createdBy", "fullName email")   // ✅ populate user details
+    .sort({ date: -1 });
+        return res.status(200).json(allAnnouncements);
+      }
+
+      // ✅ Filter announcements based on student & announcement fields
+      const announcements = await Announcement.find({
+        $or: [
+          // 1️⃣ Global announcements → visible to everyone
+          {
+            $and: [
+              { $or: [{ stream: { $exists: false } }, { stream: "" }, { stream: null }] },
+              { $or: [{ batchYear: { $exists: false } }, { batchYear: null }] },
+              { $or: [{ division: { $exists: false } }, { division: "" }, { division: null }] }
+            ]
+          },
+
+          // 2️⃣ Announcements with only stream → match student's stream
+          {
+            stream: stream,
+            $and: [
+              { $or: [{ batchYear: { $exists: false } }, { batchYear: null }] },
+              { $or: [{ division: { $exists: false } }, { division: "" }, { division: null }] }
+            ]
+          },
+
+          // 3️⃣ Announcements with stream + batchYear → match both
+          {
+            stream: stream,
+            batchYear: batchYear,
+            $or: [{ division: { $exists: false } }, { division: "" }, { division: null }]
+          },
+
+          // 4️⃣ Announcements with stream + batchYear + division → match all three
+          {
+            stream: stream,
+            batchYear: batchYear,
+            division: division
+          }
+        ]
+      })
+      
+.populate("createdBy", "fullName email")   // ✅ add here too
+      .sort({ date: -1 });
+
+      return res.status(200).json(announcements);
+
+    } catch (err) {
+      console.error("❌ Error fetching announcements:", err);
+      return res.status(500).json({ error: "Server error" });
     }
-
-    const { batchYear, stream, division, role } = student;
-
-    // ✅ If admin/faculty → return all
-    if (role === "admin" || role === "faculty") {
-      const allAnnouncements = await Announcement.find().sort({ date: -1 });
-      return res.status(200).json(allAnnouncements);
-    }
-
-    // ✅ Filter announcements based on student & announcement fields
-    const announcements = await Announcement.find({
-      $or: [
-        // 1️⃣ Global announcements → visible to everyone
-        {
-          $and: [
-            { $or: [{ stream: { $exists: false } }, { stream: "" }, { stream: null }] },
-            { $or: [{ batchYear: { $exists: false } }, { batchYear: null }] },
-            { $or: [{ division: { $exists: false } }, { division: "" }, { division: null }] }
-          ]
-        },
-
-        // 2️⃣ Announcements with only stream → match student's stream
-        {
-          stream: stream,
-          $and: [
-            { $or: [{ batchYear: { $exists: false } }, { batchYear: null }] },
-            { $or: [{ division: { $exists: false } }, { division: "" }, { division: null }] }
-          ]
-        },
-
-        // 3️⃣ Announcements with stream + batchYear → match both
-        {
-          stream: stream,
-          batchYear: batchYear,
-          $or: [{ division: { $exists: false } }, { division: "" }, { division: null }]
-        },
-
-        // 4️⃣ Announcements with stream + batchYear + division → match all three
-        {
-          stream: stream,
-          batchYear: batchYear,
-          division: division
-        }
-      ]
-    }).sort({ date: -1 });
-
-    return res.status(200).json(announcements);
-
-  } catch (err) {
-    console.error("❌ Error fetching announcements:", err);
-    return res.status(500).json({ error: "Server error" });
-  }
-};
+  };
 
 
 
@@ -114,7 +119,7 @@ export const getAllAnnouncements = async (req, res) => {
 export const getAnnouncementById = async (req, res) => {
   try {
     const announcement = await Announcement.findById(req.params.id)
-      .populate('createdBy', 'name email');
+      .populate('createdBy', 'fullName email');
 
     if (!announcement) {
       return res.status(404).json({ message: "Announcement not found" });

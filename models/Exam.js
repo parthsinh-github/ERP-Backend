@@ -22,24 +22,10 @@ const examSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  department: {
-  type: String,
-  enum: [
-    "Computer Science",
-    "Information Technology",
-    "Electronics",
-    "Mechanical",
-    "Civil",
-    "Electrical",
-    "Business Administration",
-    "Commerce",
-    "Arts",
-    "Science",
-    "Other"
-  ],
-  required: function () {
-    return this.role === "student" || this.role === "faculty";
-  }
+ stream: { 
+     type: String,
+    enum: ['BBA', 'BCA', 'BTECH', 'BCOM', 'MCA', 'MBA', 'OTHER'],
+     required: true,
 },
   semester: {
   type: Number,
